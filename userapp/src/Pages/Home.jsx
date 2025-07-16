@@ -8,6 +8,7 @@ import {
     VStack,
     Flex,
 } from "@chakra-ui/react"
+import {BASE_API} from "../api.js";
 
 export const Home = function () {
     const [profile, setProfile] = useState(null)
@@ -21,15 +22,15 @@ export const Home = function () {
                 const token = localStorage.getItem("jwt")
                 const headers = { token }
 
-                const profileRes = await fetch(`http://10.128.55.69:8002/user/`, { headers })
+                const profileRes = await fetch(BASE_API + `/user/`, { headers })
                 if (!profileRes.ok) throw new Error("Failed to fetch user profile")
                 const profileData = await profileRes.json()
 
-                const txRes = await fetch(`http://10.128.55.69:8002/user/transactions`, { headers })
+                const txRes = await fetch(BASE_API + `/user/transactions`, { headers })
                 if (!txRes.ok) throw new Error("Failed to fetch transactions")
                 const txData = await txRes.json()
 
-                const shopBalRes = await fetch(`http://10.128.55.69:8002/user/balance`, { headers })
+                const shopBalRes = await fetch(BASE_API + `/user/balance`, { headers })
                 if (!shopBalRes.ok) throw new Error("Failed to fetch shop balances")
                 const shopBalData = await shopBalRes.json()
 
@@ -88,7 +89,7 @@ export const Home = function () {
                             <Box key={tx.tid} borderWidth="1px" borderRadius="md" p={4}>
                                 <Text><strong>Shop:</strong> {tx.shop_name ?? 'N/A'}</Text>
                                 <Text><strong>Date:</strong> {new Date(tx.performed_at).toLocaleDateString()}</Text>
-                                <Text><strong>Total Cost:</strong> ${tx.total_cost}</Text>
+                                <Text><strong>Total Cost:</strong> {tx.total_cost / 100} AED</Text>
                                 <Text><strong>Points Allocated:</strong> {tx.points_allocated}</Text>
                             </Box>
                         ))

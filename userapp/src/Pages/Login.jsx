@@ -12,6 +12,7 @@ import {
 import { Field, Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import {useNavigate} from "react-router-dom";
+import {BASE_API} from "../api.js";
 
 export const Login = () => {
     const toast = useToast()
@@ -25,7 +26,7 @@ export const Login = () => {
 
     const handleLogin = async (values, actions) => {
         try {
-            const response = await fetch('http://10.128.55.69:8002/user/login', {
+            const response = await fetch(BASE_API +'/user/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(values),
