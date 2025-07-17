@@ -9,29 +9,34 @@ import {
     RadioGroup,
     Radio,
     Stack,
-} from '@chakra-ui/react';
-import { Field, Form, Formik } from 'formik';
-import validator from 'email-validator';
-import { useNavigate, useSearchParams } from "react-router-dom";
-import {BASE_API} from "../api.js";
+} from '@chakra-ui/react'; //Chakra UI components for layout and input handling
+import { Field, Form, Formik } from 'formik'; //Formik for form state management and validation
+import validator from 'email-validator'; //Lightweight email validator
+import { useNavigate, useSearchParams } from "react-router-dom"; //Hooks for navigation and query param access
+import {BASE_API} from "../api.js"; //Base API URL
 
+//Register component handles user registration form and submission
 export const Register = () => {
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const uid = searchParams.get('uid'); // Read the query param
+    const navigate = useNavigate(); //Navigation hook for redirecting
+    const [searchParams] = useSearchParams(); //Hook to read query parameters
+    const uid = searchParams.get('uid'); //Read optional uid from query string
 
+    //Validator: checks if field is non-empty
     const validateRequired = (value) => (!value ? 'This field is required' : undefined);
 
+    //Validator: checks valid email format using email-validator
     const validateEmail = (value) => {
         if (!value) return 'Email is required';
         if (!validator.validate(value)) return 'Invalid email address';
     };
 
+    //Validator: ensures DOB is filled and not in the future
     const validateDateOfBirth = (value) => {
         if (!value) return 'Date of birth is required';
         if (new Date(value) > new Date()) return 'Date cannot be in the future';
     };
 
+    //Validator: ensures password is non-empty and meets min length
     const validatePassword = (value) => {
         if (!value) return 'Password is required';
         if (value.length < 6) return 'Password must be at least 6 characters';
@@ -51,9 +56,10 @@ export const Register = () => {
             }}
             onSubmit={async (values, actions) => {
                 try {
-                    // Include uid if present
+                    //Include optional UID in the payload if present
                     const payload = uid ? { ...values, uid } : values;
 
+                    //POST request to create user
                     const response = await fetch(BASE_API + '/user/', {
                         method: 'POST',
                         headers: {
@@ -62,10 +68,12 @@ export const Register = () => {
                         body: JSON.stringify(payload),
                     });
 
+                    //Handle error response
                     if (!response.ok) {
                         const errorData = await response.json();
                         console.error("Server responded with error:", errorData);
                     } else {
+                        //On success: store token and navigate
                         const result = await response.json();
                         localStorage.setItem('jwt', result.token);
                         navigate('/user');
@@ -73,13 +81,15 @@ export const Register = () => {
                 } catch (error) {
                     console.error("Error submitting form:", error);
                 } finally {
-                    actions.setSubmitting(false);
+                    actions.setSubmitting(false); //Reset loading state
                 }
             }}
         >
             {(props) => (
                 <Form>
+                    {/* Form container with spacing and layout */}
                     <Box maxW="600px" mx="auto" mt="50px" display="flex" flexDirection="column" gap={4}>
+                        {/* First Name Field */}
                         <Field name="first_name" validate={validateRequired}>
                             {({ field, form }) => (
                                 <FormControl isInvalid={form.errors.first_name && form.touched.first_name}>
@@ -90,6 +100,7 @@ export const Register = () => {
                             )}
                         </Field>
 
+                        {/* Last Name Field */}
                         <Field name="last_name" validate={validateRequired}>
                             {({ field, form }) => (
                                 <FormControl isInvalid={form.errors.last_name && form.touched.last_name}>
@@ -100,6 +111,7 @@ export const Register = () => {
                             )}
                         </Field>
 
+                        {/* Email Field with Validation */}
                         <Field name="email" validate={validateEmail}>
                             {({ field, form }) => (
                                 <FormControl isInvalid={form.errors.email && form.touched.email}>
@@ -110,6 +122,7 @@ export const Register = () => {
                             )}
                         </Field>
 
+                        {/* Date of Birth Field */}
                         <Field name="date_of_birth" validate={validateDateOfBirth}>
                             {({ field, form }) => (
                                 <FormControl isInvalid={form.errors.date_of_birth && form.touched.date_of_birth}>
@@ -120,6 +133,7 @@ export const Register = () => {
                             )}
                         </Field>
 
+                        {/* User Name Field */}
                         <Field name="user_name" validate={validateRequired}>
                             {({ field, form }) => (
                                 <FormControl isInvalid={form.errors.user_name && form.touched.user_name}>
@@ -130,6 +144,7 @@ export const Register = () => {
                             )}
                         </Field>
 
+                        {/* Nationality Dropdown */}
                         <Field name="nationality" validate={validateRequired}>
                             {({ field, form }) => (
                                 <FormControl isInvalid={form.errors.nationality && form.touched.nationality}>
@@ -226,12 +241,12 @@ export const Register = () => {
                                         <option value="Zimbabwe">Zimbabwe</option>
                                         <option value="Other">Other</option>
                                     </Select>
-
                                     <FormErrorMessage>{form.errors.nationality}</FormErrorMessage>
                                 </FormControl>
                             )}
                         </Field>
 
+                        {/* Gender Selection */}
                         <Field name="gender" validate={validateRequired}>
                             {({ field, form }) => (
                                 <FormControl isInvalid={form.errors.gender && form.touched.gender}>
@@ -248,6 +263,7 @@ export const Register = () => {
                             )}
                         </Field>
 
+                        {/* Password Field */}
                         <Field name="password" validate={validatePassword}>
                             {({ field, form }) => (
                                 <FormControl isInvalid={form.errors.password && form.touched.password}>
@@ -258,6 +274,7 @@ export const Register = () => {
                             )}
                         </Field>
 
+                        {/* Submit Button */}
                         <Button
                             mt={4}
                             colorScheme="teal"
