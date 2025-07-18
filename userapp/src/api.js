@@ -1,1 +1,1 @@
-export const BASE_API = 'http://10.128.55.69:8002';
+export const BASE_API = "http://localhost:8002";

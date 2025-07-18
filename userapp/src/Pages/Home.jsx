@@ -75,7 +75,7 @@ export const Home = function () {
                         shops.map(([name, balance], idx) => (
                             <Box key={idx} borderWidth="1px" borderRadius="md" p={3}>
                                 <Text fontWeight="bold">{name ?? 'Unknown Shop'}</Text>
-                                <Text>Balance: {balance ?? 0}</Text>
+                                <Text>Balance: {balance ? balance / 100 : 0} Points</Text>
                             </Box>
                         ))
                     )}
@@ -106,7 +106,7 @@ export const Home = function () {
                                 <Text><strong>Shop:</strong> {tx.shop_name ?? 'N/A'}</Text>
                                 <Text><strong>Date:</strong> {new Date(tx.performed_at).toLocaleDateString()}</Text>
                                 <Text><strong>Total Cost:</strong> {tx.total_cost / 100} AED</Text>
-                                <Text><strong>Points Allocated:</strong> {tx.points_allocated}</Text>
+                                <Text><strong>Points Allocated:</strong> {tx.points_allocated / 100}</Text>
                             </Box>
                         ))
                     )}
